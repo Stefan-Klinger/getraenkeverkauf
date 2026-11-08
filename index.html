@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#14532d">
+<title>Getränkeverkauf</title>
+<style>
+:root{font-family:system-ui,-apple-system,"Segoe UI",sans-serif;color:#17221b;background:#f3f6f3}*{box-sizing:border-box}body{margin:0;padding:18px}.app{max-width:1100px;margin:auto}header{display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap;margin-bottom:18px}h1{margin:0;font-size:clamp(1.5rem,4vw,2.2rem)}button{border:0;border-radius:12px;padding:13px 17px;font:inherit;font-weight:700;cursor:pointer;touch-action:manipulation}button:focus-visible,input:focus-visible{outline:3px solid #60a5fa;outline-offset:2px}.tabs{display:flex;gap:8px;flex-wrap:wrap}.tab{background:#e1e9e2;color:#173d25}.tab.active{background:#166534;color:white}.settings,.accounting{background:white;border:1px solid #dce5dd;border-radius:16px;padding:16px;margin-bottom:18px}.settings h2,.accounting h2{margin:0 0 6px;font-size:1.2rem}.hint{color:#5e6d62;margin:0 0 14px;font-size:.95rem}.edit-grid{display:grid;grid-template-columns:minmax(0,1fr) 130px;gap:9px 12px;align-items:center}input{width:100%;min-width:0;padding:12px;border:1px solid #cbd5cc;border-radius:10px;font:inherit;background:#fff}.products{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:13px}.product{background:white;border:1px solid #dce5dd;border-radius:16px;padding:16px;box-shadow:0 2px 7px #173d250a}.product-name{font-size:1.1rem;font-weight:750;overflow-wrap:anywhere}.price{color:#166534;font-weight:800;font-size:1.35rem;margin:7px 0 13px}.counter{display:flex;align-items:center;justify-content:space-between;gap:12px}.counter button{width:54px;height:52px;padding:0;font-size:1.65rem}.minus{background:#edf1ed;color:#26352a}.plus{background:#166534;color:white}.minus:disabled{opacity:.35;cursor:not-allowed}.count{min-width:28px;text-align:center;font-size:1.45rem;font-weight:800;font-variant-numeric:tabular-nums}.summary{position:sticky;bottom:10px;margin-top:18px;background:#123d25;color:white;border-radius:18px;padding:17px 19px;box-shadow:0 5px 20px #102b1b30}.summary-row{display:flex;justify-content:space-between;align-items:center;gap:12px}.summary-label{font-size:.95rem;color:#d2e5d6}.total{font-size:clamp(1.9rem,6vw,2.6rem);font-weight:850;font-variant-numeric:tabular-nums}.cash-controls{display:flex;justify-content:flex-end;margin-top:13px}.cash-button{background:#d8f0df;color:#123d25}.cash-summary{margin-top:12px;text-align:right;line-height:1.6;font-variant-numeric:tabular-nums}.cash-summary div{display:flex;justify-content:flex-end;gap:8px}.cash-summary strong{min-width:135px;text-align:right}.reset-order{width:100%;margin-top:13px;background:#fff;color:#17452a}.accounting-table{width:100%;border-collapse:collapse;margin:12px 0 18px}.accounting-table th,.accounting-table td{text-align:left;padding:12px 9px;border-bottom:1px solid #e4ebe5}.accounting-table th{color:#5e6d62;font-size:.9rem;font-weight:700}.accounting-table td.num,.accounting-table th.num{text-align:right;font-variant-numeric:tabular-nums}.accounting-table tfoot td{font-weight:800;border-top:2px solid #cbd8cd}.revenue-card{background:#123d25;color:white;border-radius:16px;padding:16px;margin:14px 0}.revenue-card .summary-label{color:#d2e5d6}.reset-sales{width:100%;background:#a52b2b;color:white}[hidden]{display:none!important}@media(min-width:760px){body{padding:28px}.products{grid-template-columns:repeat(3,minmax(0,1fr));gap:16px}.product{padding:19px}}@media(min-width:1050px){.products{grid-template-columns:repeat(5,minmax(0,1fr))}}@media(max-width:480px){body{padding:11px}.products{gap:9px}.product{padding:12px}.counter button{width:46px;height:48px}.edit-grid{grid-template-columns:minmax(0,1fr) 105px}.accounting-table th,.accounting-table td{padding:10px 5px;font-size:.9rem}}
+</style>
+</head>
+<body>
+<main class="app">
+<header><h1>🥤 Getränkeverkauf</h1><nav class="tabs" aria-label="Programmbereiche">
+<button class="tab active" id="salesTab" type="button">Verkauf</button>
+<button class="tab" id="settingsTab" type="button">Getränke bearbeiten</button>
+<button class="tab" id="accountingTab" type="button">Abrechnung</button>
+</nav></header>
+<section id="salesPage">
+<div class="products" id="products" aria-label="Getränkeauswahl"></div>
+<section class="summary" aria-live="polite"><div class="summary-row">
+<div><div class="summary-label">Getränke in dieser Bestellung</div><div class="total" id="itemCount">0</div></div>
+<div style="text-align:right"><div class="summary-label">Gesamtbetrag</div><div class="total" id="total">0,00 €</div></div>
+</div>
+<div class="cash-controls"><button class="cash-button" id="givenAmountButton" type="button">Gegebener Betrag</button></div>
+<div class="cash-summary" id="cashSummary" aria-live="polite" hidden>
+<div><span>1. Gegeben wurde:</span><strong id="givenAmountDisplay">–</strong></div>
+<div><span>2. Gesamtbetrag:</span><strong id="cashTotalDisplay">0,00 €</strong></div>
+<div><span>3. Rückgeld:</span><strong id="changeDisplay">0,00 €</strong></div>
+</div>
+<button class="reset-order" id="resetOrder" type="button">↻ Neue Bestellung / Zurücksetzen</button></section>
+</section>
+<section class="settings" id="settingsPage" hidden>
+<h2>Getränke und Preise bearbeiten</h2><p class="hint">Hier kannst du die zehn Getränke und ihre Einzelpreise festlegen. Änderungen werden auf diesem Gerät gespeichert.</p>
+<div class="edit-grid" id="editGrid"></div>
+</section>
+<section class="accounting" id="accountingPage" hidden>
+<h2>Abrechnung</h2><p class="hint">Hier siehst du die seit dem letzten Zurücksetzen verkauften Mengen und den Umsatz pro Artikel.</p>
+<div style="overflow-x:auto"><table class="accounting-table">
+<thead><tr><th>Artikel</th><th class="num">Verkauft</th><th class="num">Umsatz</th></tr></thead>
+<tbody id="accountingRows"></tbody>
+<tfoot><tr><td>Gesamt</td><td class="num" id="accountingCount">0</td><td class="num" id="accountingTotal">0,00 €</td></tr></tfoot>
+</table></div>
+<div class="revenue-card"><div class="summary-label">GESAMTUMSATZ</div><div class="total" id="revenueTotal">0,00 €</div><div class="summary-label" id="revenueCount">0 Getränke verkauft</div></div>
+<button class="reset-sales" id="resetSales" type="button">Verkaufte Summen zurücksetzen</button>
+</section>
+</main>
+<script>
+const defaults=Array.from({length:10},(_,i)=>({name:`Getränk ${i+1}`,price:2.50,count:0,sold:0}));
+function readSaved(key){try{return JSON.parse(localStorage.getItem(key))}catch(_){return null}}
+const savedSettings=readSaved('getraenkeverkauf-settings'),savedSales=readSaved('getraenkeverkauf-sales');
+let items=defaults.map((item,i)=>({...item,...(Array.isArray(savedSettings)&&savedSettings[i]?{name:typeof savedSettings[i].name==='string'?savedSettings[i].name:item.name,price:Number.isFinite(Number(savedSettings[i].price))&&Number(savedSettings[i].price)>=0?Number(savedSettings[i].price):item.price}:{}),sold:Array.isArray(savedSales)&&savedSales[i]&&Number.isFinite(Number(savedSales[i].sold))?Math.max(0,Number(savedSales[i].sold)):0,count:0}));
+function saveSettings(){localStorage.setItem('getraenkeverkauf-settings',JSON.stringify(items.map(({name,price})=>({name,price}))))}
+function saveSales(){localStorage.setItem('getraenkeverkauf-sales',JSON.stringify(items.map(({sold})=>({sold}))))}
+function euro(v){return new Intl.NumberFormat('de-DE',{style:'currency',currency:'EUR'}).format(v)}
+function showPage(page){document.getElementById('salesPage').hidden=page!=='sales';document.getElementById('settingsPage').hidden=page!=='settings';document.getElementById('accountingPage').hidden=page!=='accounting';document.getElementById('salesTab').classList.toggle('active',page==='sales');document.getElementById('settingsTab').classList.toggle('active',page==='settings');document.getElementById('accountingTab').classList.toggle('active',page==='accounting');if(page==='settings')renderEditors();if(page==='accounting')renderAccounting()}
+function renderProducts(){const root=document.getElementById('products');root.innerHTML='';items.forEach((item,index)=>{const card=document.createElement('article');card.className='product';const name=document.createElement('div');name.className='product-name';name.textContent=item.name.trim()||`Getränk ${index+1}`;const price=document.createElement('div');price.className='price';price.textContent=euro(item.price);const counter=document.createElement('div');counter.className='counter';const minus=document.createElement('button');minus.className='minus';minus.type='button';minus.textContent='−';minus.setAttribute('aria-label',`${item.name}: eins weniger`);minus.disabled=item.count===0;minus.addEventListener('click',()=>changeCount(index,-1));const count=document.createElement('span');count.className='count';count.textContent=item.count;const plus=document.createElement('button');plus.className='plus';plus.type='button';plus.textContent='+';plus.setAttribute('aria-label',`${item.name}: eins mehr`);plus.addEventListener('click',()=>changeCount(index,1));counter.append(minus,count,plus);card.append(name,price,counter);root.append(card)});updateSummary()}
+function changeCount(index,delta){const item=items[index],next=Math.max(0,item.count+delta);if(next>item.count)item.sold++;if(next<item.count)item.sold=Math.max(0,item.sold-1);item.count=next;saveSales();renderProducts()}
+let givenAmount=null;
+function currentTotal(){return items.reduce((s,i)=>s+i.count*i.price,0)}
+function updateCashSummary(){if(givenAmount===null)return;const total=currentTotal();document.getElementById('cashTotalDisplay').textContent=euro(total);document.getElementById('changeDisplay').textContent=euro(givenAmount-total)}
+function updateSummary(){const quantity=items.reduce((s,i)=>s+i.count,0),total=currentTotal();document.getElementById('itemCount').textContent=quantity;document.getElementById('total').textContent=euro(total);updateCashSummary()}
+function renderEditors(){const grid=document.getElementById('editGrid');grid.innerHTML='';items.forEach((item,index)=>{const n=document.createElement('input');n.type='text';n.maxLength=40;n.value=item.name;n.setAttribute('aria-label',`Name Getränk ${index+1}`);n.placeholder=`Getränk ${index+1}`;n.addEventListener('input',()=>{items[index].name=n.value;saveSettings()});const p=document.createElement('input');p.type='number';p.min='0';p.step='0.01';p.inputMode='decimal';p.value=Number(item.price).toFixed(2);p.setAttribute('aria-label',`Preis Getränk ${index+1} in Euro`);p.addEventListener('change',()=>{const parsed=Number(String(p.value).replace(',','.'));items[index].price=Number.isFinite(parsed)&&parsed>=0?parsed:0;p.value=items[index].price.toFixed(2);saveSettings()});grid.append(n,p)})}
+function renderAccounting(){const tbody=document.getElementById('accountingRows');tbody.innerHTML='';let countTotal=0,revenueTotal=0;items.forEach((item,index)=>{const revenue=item.sold*item.price;countTotal+=item.sold;revenueTotal+=revenue;const tr=document.createElement('tr'),name=document.createElement('td'),count=document.createElement('td'),amount=document.createElement('td');name.textContent=item.name.trim()||`Getränk ${index+1}`;count.className='num';count.textContent=item.sold;amount.className='num';amount.textContent=euro(revenue);tr.append(name,count,amount);tbody.append(tr)});document.getElementById('accountingCount').textContent=countTotal;document.getElementById('accountingTotal').textContent=euro(revenueTotal);document.getElementById('revenueTotal').textContent=euro(revenueTotal);document.getElementById('revenueCount').textContent=`${countTotal} Getränke verkauft`}
+document.getElementById('salesTab').addEventListener('click',()=>showPage('sales'));
+document.getElementById('settingsTab').addEventListener('click',()=>showPage('settings'));
+document.getElementById('accountingTab').addEventListener('click',()=>showPage('accounting'));
+document.getElementById('givenAmountButton').addEventListener('click',()=>{const answer=window.prompt('Welcher Betrag wurde gegeben?');if(answer===null)return;const parsed=Number(String(answer).trim().replace(',','.'));if(!Number.isFinite(parsed)||parsed<0){window.alert('Bitte geben Sie einen gültigen Betrag ab 0,00 € ein.');return;}givenAmount=parsed;document.getElementById('givenAmountDisplay').textContent=euro(givenAmount);document.getElementById('cashSummary').hidden=false;updateCashSummary()});
+document.getElementById('resetOrder').addEventListener('click',()=>{items.forEach(i=>i.count=0);givenAmount=null;document.getElementById('cashSummary').hidden=true;renderProducts()});
+document.getElementById('resetSales').addEventListener('click',()=>{if(!window.confirm('Sind Sie sicher? Die verkauften Summen und der bisherige Umsatz werden zurückgesetzt.'))return;items.forEach(i=>i.sold=0);saveSales();renderAccounting()});
+renderProducts();
+</script>
+</body>
+</html>
